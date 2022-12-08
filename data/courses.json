@@ -1,0 +1,27 @@
+[
+    {
+        "name": "English",
+        "description": "lorem ipsum dolor sit amet",
+        "schedule": "Monday, 18.00-19.30; Wednesday, 18.00-19.30"
+    },
+    {
+        "name": "French",
+        "description": "lorem ipsum dolor sit amet",
+        "schedule": "Tuesday, 18.00-19.30; Thursday, 18.00-19.30"
+    },
+    {
+        "name": "Mandarin",
+        "description": "lorem ipsum dolor sit amet",
+        "schedule": "Wednesday, 20.00-21.30; Friday, 18.00-19.30"
+    },
+    {
+        "name": "Spanish",
+        "description": "lorem ipsum dolor sit amet",
+        "schedule": "Monday, 20.00-21.30; Tuesday, 20.00-21.30"
+    },
+    {
+        "name": "German",
+        "description": "lorem ipsum dolor sit amet",
+        "schedule": "Thursday, 20.00-21.30; Friday, 20.00-21.30"
+    }
+]
