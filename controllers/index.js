@@ -24,39 +24,40 @@ class Controller {
     static register(req, res) {
         const data = req.body
         User.create({
-            email: data.email,
-            password: data.password,
-            createdAt: new Date(),
-            updatedAt: new Date()
+        email: data.email, 
+          password: data.password,
+          role: data.role,
+          createdAt: new Date(),
+          updatedAt: new Date()
         })
-            .then(user => {
-                const id = +user.dataValues.id
-                console.log(id)
-                if (data.role === 'Instructor') {
-                    console.log('masuk')
-                    console.log(id)
-                    Instructor.create({
-                        name: data.name,
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                        UserId: id
-                    })
-                        .then(instructor => res.redirect('/login'))
-                        .catch(err => console.log(err))
-                } else {
-                    Student.create({
-                        name: data.name,
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                        UserId: id
-                    })
-                        .then(student => res.redirect('/login'))
-                        .catch(err => console.log(err))
-                }
-            })
-            .catch(err => console.log(err))
-    }
-
+          .then(user => {
+            const id = +user.dataValues.id
+            console.log(id)
+            if(data.role === 'Instructor'){
+              console.log('masuk')
+              console.log(id)
+              Instructor.create({
+                name: data.name,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                UserId: id
+              })
+                .then(instructor => res.redirect('/login'))
+                .catch(err => console.log(err))
+            } else {
+              Student.create({
+                name: data.name,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                UserId: id
+              })
+                .then(student => res.redirect('/login'))
+                .catch(err => console.log(err))
+            }
+          })
+          .catch(err => console.log(err))
+      }
+      
     static loginForm(req, res) {
         res.render('login')
     }
