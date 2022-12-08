@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLingo</title>
+</head>
+<body>
+    <h1>Hello, <%= user.Student.name %>!</h1>
+    <h2>Your courses:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <% courses.map(el => { %>
+                <% el.Enrollment.map(el => {%>
+                    <% if (el.StudentId === user.Student.id) { %>
+                        <td><%= el.Course.name %></td>
+                        <td><a href="<%= el.Course.id %>/courseDetail">Detail</a></td>
+                    <% } %>
+                <% } %>
+            <% } %>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Other courses:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+            <% courses.map(el => { %>
+                <% el.Enrollment.map(el => {%>
+                    <% if (el.StudentId !== user.Student.id) { %>
+                        <td><%= el.Course.name %></td>
+                        <td><a href="<%= el.Course.id %>/courseDetail">Detail</a></td>
+                    <% } %>
+                <% } %>
+            <% } %>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

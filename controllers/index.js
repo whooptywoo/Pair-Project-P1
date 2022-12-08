@@ -1,27 +1,22 @@
 const { Course, User, Instructor, Student } = require('../models')
 const bcrypt = require('bcryptjs')
 
-class Controller {
-    static home (req, res) {
-        const data = {};
-        if (req.params.id) {
-            const user = Course.findByPk(id,{include: [Student, Instructor]});
-            data.user = user;
-        }
 
+class Controller {
+    static home(req, res) {
         Course.findAll()
             .then(courses => {
-                data.courses = courses;
-                res.render('home', data)})
+                res.render('home', courses)
+            })
             .catch(err => res.send(err))
     }
 
-    static courseDetail (req, res) {
-        Course.findByPk(+req.params.courseId, {include: Instructor})
-            .then(course => res.render('courseDetail', {course}))
+    static courseDetail(req, res) {
+        Course.findByPk(+req.params.courseId, { include: Instructor })
+            .then(course => res.render('courseDetail', { course }))
             .catch(err => res.send(err))
     }
-    
+
     static registerForm(req, res){
         res.render('register')
       }
@@ -84,5 +79,29 @@ class Controller {
           .catch(err => res.send(err))
       }
     
+
+    static homeUser(req, res) {
+        const data = {};
+        User.findByPk(req.params.id, { include: [Student, Instructor] })
+            .then(user => {
+                data.user = user;
+                if (user.Student) {
+                    return Course.findAll({ include: { all: true, nested: true }})
+                } else if (user.Instructor) {
+                    return Course.findOne({where: {InstructorId: +req.params.id}})
+                }
+            })
+            .then(courses => {
+                data.courses = courses;
+                if (user.Instructor) {
+                    res.render('home-instructor', data)
+                } else if (user.Student) {
+                    res.render('home-student', data)
+                }
+            })
+            .catch(err => res.send(err))
+    }
+
+
 }
 module.exports = Controller
