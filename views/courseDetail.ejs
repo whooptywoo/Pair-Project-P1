@@ -14,6 +14,10 @@
             <h2><%= el %></h2>
         <% }) %>
     <p><%= course.description %></p>
-    <a href="/login">Enroll</a>
+    <% if (student !== null) { %>
+        <a href="/<%= student.id %>/<%= course.id %>/enroll">Enroll</a>
+    <% } else { %>
+        <a href="/login">Enroll</a>
+     <% } %>
 </body>
 </html>

@@ -8,6 +8,25 @@
 </head>
 <body>
     <h1>Hello, <%= user.name %>!</h1>
-    <h2>Your course <%= courses.name %></h2>
+    <h1><%= courses.name %>'s Student List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Course</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% courses.map(el => { %>
+                <tr>
+                    <td><%= el.id %></td>
+                    <td><%= el.name %></td>
+                    <td><a href="<%= el.id %>/courseDetail">Detail</a></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
 </body>
 </html>

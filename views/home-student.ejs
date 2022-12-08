@@ -8,44 +8,59 @@
 </head>
 <body>
     <h1>Hello, <%= user.name %>!</h1>
-    <h2>Your courses:</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Course</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            <% user.Courses.forEach(el => { %>
-                    <% if (el.Enrollment.StudentId === user.id) { %>
-                        <td><%= el.name %></td>
-                        <td><a href="<%= el.id %>/courseDetail">Detail</a></td>
-                    <% } %>
-            <% }) %>
-            </tr>
-        </tbody>
-    </table>
-    <h2>Explore other courses:</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Course</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% courses.forEach(el1 => { %>
+    <% if (idTakenCourses.length === 0) { %>
+        <h1> You haven't taken any courses yet! Enroll to one of them now! </h1>
+    <% } else { %>
+        <h2>Your courses:</h2>
+        <table>
+            <thead>
                 <tr>
-                    <% idTakenCourses.forEach(el2 => { %>
-                        <% if (el1.id !== el2) { %>
-                            <td><%= el1.name %></td>
-                            <td><a href="<%= el1.id %>/courseDetail">Detail</a></td>
-                        <% } %>
-                    <% }) %>
+                    <th>Course</th>
+                    <th>Action</th>
                 </tr>
-            <% }) %>
+            </thead>
+            <tbody>
+                <tr>
+                <% user.Courses.forEach(el => { %>
+                        <% if (el.Enrollment.StudentId === user.id) { %>
+                            <td><%= el.name %></td>
+                            <td><a href="/<%= user.id %>/<%= el.id %>/courseDetail">Detail</a></td>
+                        <% } %>
+                <% }) %>
+                </tr>
+            </tbody>
+        </table>
+    <% } %>
+    <% if (idTakenCourses.length !== 0) { %>
+    <h2>Explore other courses:</h2>
+    <% } %>
+    <table>
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (idTakenCourses.length !== 0) { %>
+                <% courses.forEach(el1 => { %>
+                    <tr>
+                        <% idTakenCourses.forEach(el2 => { %>
+                            <% if (el1.id !== el2) { %>
+                                <td><%= el1.name %></td>
+                                <td><a href="/<%= user.id %>/<%= el1.id %>/courseDetail">Detail</a></td>
+                            <% } %>
+                        <% }) %>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <% courses.map(el => { %>
+                    <tr>
+                        <td><%= el.name %></td>
+                        <td><a href="/<%= user.id %>/<%= el.id %>/courseDetail">Detail</a></td>
+                    </tr>
+                <% }) %>
+            <% } %>
         </tbody>
     </table>
     <a href="/">Log Out</a>

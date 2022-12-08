@@ -12,9 +12,32 @@ class Controller {
     }
 
     static courseDetail(req, res) {
-        Course.findByPk(+req.params.courseId, { include: Instructor })
-            .then(course => res.render('courseDetail', { course }))
+        const data = {}
+        console.log(req.params.userId)
+        if (req.params.userId !== null) {
+            Student.findByPk(req.params.userId)
+                .then(student => {
+                    data.student = student;
+                    return Course.findByPk(+req.params.courseId, { include: Instructor })
+                })
+                .then(course => {
+                    data.course = course
+                    // res.send(data)
+                    res.render('courseDetail', data)
+                })
+                .catch(err => res.send(err))
+        } else {
+            Course.findByPk(+req.params.courseId, { include: Instructor })
+            .then(course => {
+                data.course = course
+                res.send(data)
+            })
             .catch(err => res.send(err))
+        }
+    }
+
+    static enrollCourse(req, res) {
+        
     }
 
     static registerForm(req, res) {
@@ -65,7 +88,6 @@ class Controller {
         const { email, password } = req.body;
         User.findOne({ where: { email }, include: [Student, Instructor] })
             .then(user => {
-                // res.send(user.Student)
                 if (user) {
                     const isValidPassword = bcrypt.compareSync(password, user.password)
                     if (isValidPassword) {
@@ -74,14 +96,9 @@ class Controller {
                         res.send('gagal login')
                     }
                 }
-                // else if (user.Instructor) {
-                //     res.send(user)
-                //     // res.redirect(`/${user.id}`)
-                // }
             })
             .catch(err => {
-                console.log(err)
-                // res.send(err)
+                res.send(err)
             })
     }
 
@@ -117,58 +134,24 @@ class Controller {
                 } else {
                     console.log('SBSBA')
                     return Student.findAll({ include: Course })
+                        .then(students => {
+                            const studentsByCourse = students.map(el => {
+                                if (el.Courses.Enrollment.CourseId === data.courses.id) {
+                                    return el
+                                }
+                            })
+                            data.students = studentsByCourse
+                            data.courses.forEach(el => {
+                                if (el.InstructorId === data.user.id) {
+                                    data.courses = el
+                                }
+                            })
+                            res.send(data)
+                        })
                     // res.send(data)
                     res.render('home-instructor', data)
                 }
             })
-            .then(students => {
-                const studentsByCourse = students.map(el => {
-                    if (el.Courses.Enrollment.CourseId === data.courses.id) {
-                        return el
-                    }
-                })
-                data.students = studentsByCourse
-                data.courses.forEach(el => {
-                    if (el.InstructorId === data.user.id) {
-                        data.courses = el
-                    }
-                })
-                res.send(data)
-            })
-            // .then(student => res.send(student))
-
-            // Student.findAll({ include: Course })
-            //     .then(students => {
-            //         // res.send(students)
-            //         const courses = students.map(el => {
-            //             data.student = el;
-            //             console.log(el);
-            //             if (el.id === +req.params.userId) {
-            //                 return el.Courses
-            //             }
-            //         })
-            //         // data.Courses = courses
-            //         // res.send(data);
-            //         // res.render('home-student', data)
-            //     })
-            // .then(user => {
-            //     data.user = user;
-            //     if (user.Student) {
-            //         return Course.findAll({ include: { all: true, nested: true } })
-            //     } else if (user.Instructor) {
-            //         return Course.findOne({ where: { InstructorId: +req.params.id } })
-            //     }
-            // })
-            // .then(courses => {
-            //     data.courses = courses;
-            //     if (data.user.Instructor) {
-            //         res.send(data)
-            //         // res.render('home-instructor', data)
-            //     } else if (data.user.Student) {
-            //         res.send(data)
-            //         // res.render('home-student', data)
-            //     }
-            // })
             .catch(err => {
                 console.log(err)
                 res.send(err)
