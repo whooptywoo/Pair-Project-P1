@@ -6,15 +6,13 @@ const Controller = require('../controllers/');
 
 
 router.get('/', Controller.home);
-router.get('/:courseId/courseDetail', Controller.courseDetail)
-router.get('/:userId/', Controller.homeUser)
-// router.get('/:/')
-// router.use('/courseDetail', require());
-
 router.get('/register', Controller.registerForm)
 router.post('/register', Controller.register)
-
-router.get('/login', Controller.loginform)
+router.get('/login', Controller.loginForm)
 router.post('/login', Controller.login)
+router.get('/:userId', Controller.homeUser)
+router.get('/:userId/courseDetail', )
+router.get('/:courseId/courseDetail', Controller.courseDetail)
+
 
 module.exports = router;

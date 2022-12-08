@@ -18,9 +18,15 @@ module.exports = {
       schedule: {
         type: Sequelize.STRING
       },
+      InstructorId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Instructors',
+          key: 'id'
+        }
+      },
       isPassed: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,

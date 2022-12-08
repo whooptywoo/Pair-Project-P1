@@ -7,7 +7,7 @@
     <title>EduLingo</title>
 </head>
 <body>
-    <h1>Hello, <%= user.Student.name %>!</h1>
+    <h1>Hello, <%= user.name %>!</h1>
     <h2>Your courses:</h2>
     <table>
         <thead>
@@ -18,18 +18,16 @@
         </thead>
         <tbody>
             <tr>
-            <% courses.map(el => { %>
-                <% el.Enrollment.map(el => {%>
-                    <% if (el.StudentId === user.Student.id) { %>
-                        <td><%= el.Course.name %></td>
-                        <td><a href="<%= el.Course.id %>/courseDetail">Detail</a></td>
+            <% user.Courses.forEach(el => { %>
+                    <% if (el.Enrollment.StudentId === user.id) { %>
+                        <td><%= el.name %></td>
+                        <td><a href="<%= el.id %>/courseDetail">Detail</a></td>
                     <% } %>
-                <% } %>
-            <% } %>
+            <% }) %>
             </tr>
         </tbody>
     </table>
-    <h2>Other courses:</h2>
+    <h2>Explore other courses:</h2>
     <table>
         <thead>
             <tr>
@@ -38,17 +36,18 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-            <% courses.map(el => { %>
-                <% el.Enrollment.map(el => {%>
-                    <% if (el.StudentId !== user.Student.id) { %>
-                        <td><%= el.Course.name %></td>
-                        <td><a href="<%= el.Course.id %>/courseDetail">Detail</a></td>
-                    <% } %>
-                <% } %>
-            <% } %>
-            </tr>
+            <% courses.forEach(el1 => { %>
+                <tr>
+                    <% idTakenCourses.forEach(el2 => { %>
+                        <% if (el1.id !== el2) { %>
+                            <td><%= el1.name %></td>
+                            <td><a href="<%= el1.id %>/courseDetail">Detail</a></td>
+                        <% } %>
+                    <% }) %>
+                </tr>
+            <% }) %>
         </tbody>
     </table>
+    <a href="/">Log Out</a>
 </body>
 </html>

@@ -1,0 +1,21 @@
+<h2>Your courses:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <% courses.map(el => { %>
+            <% el.Enrollment.map(el => {%>
+                <% if (el.StudentId === user.Student.id) { %>
+                    <td><%= el.Course.name %></td>
+                    <td><a href="<%= el.Course.id %>/courseDetail">Detail</a></td>
+                <% } %>
+            <% } %>
+        <% } %>
+        </tr>
+    </tbody>
+</table>
