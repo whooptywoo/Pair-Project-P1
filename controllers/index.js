@@ -31,6 +31,7 @@ class Controller {
         User.create({
           email: data.email, 
           password: data.password,
+          role: data.role,
           createdAt: new Date(),
           updatedAt: new Date()
         })
@@ -63,7 +64,8 @@ class Controller {
       }
     
       static loginform(req, res){
-        res.render('login')
+        const error = req.query.error
+        res.render('login', { error })
       }
     
       static login(req, res){
@@ -73,12 +75,17 @@ class Controller {
           .then(user => {
             if(user){
               const isValidPassword = bcrypt.compareSync(password, user.password)
-    
+
               if(isValidPassword){
-                res.redirect(`/${user.id}`)
+                req.session.role = user.role
+                return res.redirect(`/${user.id}`)
               } else {
-                res.send('gagal login')
+                const error = 'Email/Password is invalid!'
+                return res.redirect(`/login?error=${error}`)
               }
+            } else {
+              const error = 'Email/Password is invalid!'
+              return res.redirect(`/login?error=${error}`)
             }
           })
           .catch(err => res.send(err))
