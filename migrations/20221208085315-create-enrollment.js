@@ -1,32 +1,33 @@
 'use strict';
+
+const { Model } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Courses', {
+    await queryInterface.createTable('Enrollments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
+      isDone: {
+        type: Sequelize.BOOLEAN
       },
-      description: {
-        type: Sequelize.STRING
-      },
-      schedule: {
-        type: Sequelize.STRING
-      },
-      InstructorId: {
+      CourseId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Instructors',
+          model: 'Courses',
           key: 'id'
         }
       },
-      isPassed: {
-        type: Sequelize.BOOLEAN
+      StudentId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Students',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,
@@ -39,6 +40,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Courses');
+    await queryInterface.dropTable('Enrollments');
   }
 };
