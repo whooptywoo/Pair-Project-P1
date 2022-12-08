@@ -28,16 +28,16 @@ class Controller {
                 .catch(err => res.send(err))
         } else {
             Course.findByPk(+req.params.courseId, { include: Instructor })
-            .then(course => {
-                data.course = course
-                res.send(data)
-            })
-            .catch(err => res.send(err))
+                .then(course => {
+                    data.course = course
+                    res.send(data)
+                })
+                .catch(err => res.send(err))
         }
     }
 
     static enrollCourse(req, res) {
-        
+
     }
 
     static registerForm(req, res) {
@@ -49,6 +49,7 @@ class Controller {
         User.create({
             email: data.email,
             password: data.password,
+            role: data.role,
             createdAt: new Date(),
             updatedAt: new Date()
         })
@@ -81,25 +82,31 @@ class Controller {
     }
 
     static loginForm(req, res) {
-        res.render('login')
+        const error = req.query.error
+        res.render('login', { error })
     }
 
     static login(req, res) {
-        const { email, password } = req.body;
-        User.findOne({ where: { email }, include: [Student, Instructor] })
+        const { email, password } = req.body
+
+        User.findOne({ where: { email } })
             .then(user => {
                 if (user) {
                     const isValidPassword = bcrypt.compareSync(password, user.password)
+
                     if (isValidPassword) {
-                        res.redirect(`/${user.id}`)
+                        req.session.userId = user.id
+                        return res.redirect(`/${user.id}`)
                     } else {
-                        res.send('gagal login')
+                        const error = 'Email/Password is invalid!'
+                        return res.redirect(`/login?error=${error}`)
                     }
+                } else {
+                    const error = 'Email/Password is invalid!'
+                    return res.redirect(`/login?error=${error}`)
                 }
             })
-            .catch(err => {
-                res.send(err)
-            })
+            .catch(err => console.log(err))
     }
 
 
@@ -119,7 +126,7 @@ class Controller {
                     return Student.findOne({ where: { UserId: +req.params.userId }, include: Course })
                 } else if (user.Instructor) {
                     role = "instructor"
-                    return Instructor.findOne({ where: { UserId: +req.params.userId } })
+                    return Instructor.findOne({ where: { UserId: +req.params.userId }, include: Course })
                 }
             })
             .then(user => {
@@ -132,28 +139,42 @@ class Controller {
                     // res.send(data)
                     res.render('home-student', data)
                 } else {
-                    console.log('SBSBA')
                     return Student.findAll({ include: Course })
-                        .then(students => {
-                            const studentsByCourse = students.map(el => {
-                                if (el.Courses.Enrollment.CourseId === data.courses.id) {
-                                    return el
-                                }
-                            })
-                            data.students = studentsByCourse
-                            data.courses.forEach(el => {
-                                if (el.InstructorId === data.user.id) {
-                                    data.courses = el
-                                }
-                            })
-                            res.send(data)
-                        })
                     // res.send(data)
-                    res.render('home-instructor', data)
                 }
             })
+            .then(students => {
+                data.students = students;
+                const filteredStudents = []
+                const instructorCourse = data.user.Course.id
+                data.students.forEach(el1 => {
+                    el1.Courses.forEach(el2 => {
+                        if (el2.id === instructorCourse) {
+                            filteredStudents.push(el1)
+                        }
+                    })
+                })
+                // students.forEach(elStudent => {
+                //     console.log(elStudent)
+                //     data.courses.forEach(elCourse => {
+                //         console.log(elCourse)
+                //         // if (el1.Courses.Enrollment.CourseId === el2.id) {
+                //         //     data.students = el1
+                //         // }
+                //     })
+                // })
+                // data.courses.forEach(el => {
+                //     if (el.InstructorId === data.user.id) {
+                //         data.courses = el
+                //     }
+                // })
+                data.filteredStudents = filteredStudents
+                // res.send(data)
+                // res.send(data.students)
+                res.render('home-instructor', data)
+            })
             .catch(err => {
-                console.log(err)
+                // console.log(err)
                 res.send(err)
             }
             )

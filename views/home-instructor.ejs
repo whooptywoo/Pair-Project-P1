@@ -8,25 +8,24 @@
 </head>
 <body>
     <h1>Hello, <%= user.name %>!</h1>
-    <h1><%= courses.name %>'s Student List</h1>
+    <h1><%= user.Course.name %> Class's Student List</h1>
     <table>
         <thead>
             <tr>
                 <th>Student ID</th>
-                <th>Course</th>
+                <th>Name</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <% courses.map(el => { %>
+            <% filteredStudents.map(el => { %>
                 <tr>
                     <td><%= el.id %></td>
                     <td><%= el.name %></td>
-                    <td><a href="<%= el.id %>/courseDetail">Detail</a></td>
+                    <td><a href="">Mark as Finished</a></td>
                 </tr>
             <% }) %>
         </tbody>
     </table>
-
 </body>
 </html>
