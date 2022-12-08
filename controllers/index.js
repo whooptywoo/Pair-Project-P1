@@ -13,9 +13,8 @@ class Controller {
 
     static courseDetail(req, res) {
         const data = {}
-        console.log(req.params.userId)
         if (req.params.userId !== null) {
-            Student.findByPk(req.params.userId)
+            Student.findByPk(req.params.userId, {include: Course})
                 .then(student => {
                     data.student = student;
                     return Course.findByPk(+req.params.courseId, { include: Instructor })
@@ -30,14 +29,20 @@ class Controller {
             Course.findByPk(+req.params.courseId, { include: Instructor })
                 .then(course => {
                     data.course = course
-                    res.send(data)
+                    res.render('courseDetail', data)
                 })
                 .catch(err => res.send(err))
         }
     }
 
     static enrollCourse(req, res) {
-
+        Enrollment.create({
+            isDone: false,
+            CourseId: +req.params.courseId,
+            StudentId: +req.params.userId
+        })
+            .then(() => res.redirect('/:userId/:courseId/courseDetail'))
+            .catch((err) => res.send(err))
     }
 
     static registerForm(req, res) {
@@ -139,6 +144,16 @@ class Controller {
                     // res.send(data)
                     res.render('home-student', data)
                 } else {
+                    // let option = { include: Course }
+                    // Report.findAll({where}, {
+                    //     order: [
+                    //         ["dateOfEvent", "DESC"]
+                    //     ],
+                    // })
+                    // if (req.query.search) {
+                    //     // if (byEvent) {where.event = {[Op.iLike]: `%${byEvent}%`}}
+                    //     option.where = { name: [Op.iLike]}
+                    // }
                     return Student.findAll({ include: Course })
                     // res.send(data)
                 }
@@ -154,20 +169,6 @@ class Controller {
                         }
                     })
                 })
-                // students.forEach(elStudent => {
-                //     console.log(elStudent)
-                //     data.courses.forEach(elCourse => {
-                //         console.log(elCourse)
-                //         // if (el1.Courses.Enrollment.CourseId === el2.id) {
-                //         //     data.students = el1
-                //         // }
-                //     })
-                // })
-                // data.courses.forEach(el => {
-                //     if (el.InstructorId === data.user.id) {
-                //         data.courses = el
-                //     }
-                // })
                 data.filteredStudents = filteredStudents
                 // res.send(data)
                 // res.send(data.students)
@@ -178,6 +179,15 @@ class Controller {
                 res.send(err)
             }
             )
+    }
+
+    static markDone(req, res) {
+        Enrollment.update({isDone: true}, {where: {
+            StudentId: +req.params.studentId,
+            CourseId: +req.params.courseId
+        }})
+        .then(() => res.redirect(`/${req.params.userId}`))
+        .catch((err) => res.send(err))
     }
 
 

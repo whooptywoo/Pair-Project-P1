@@ -15,9 +15,15 @@
         <% }) %>
     <p><%= course.description %></p>
     <% if (student !== null) { %>
-        <a href="/<%= student.id %>/<%= course.id %>/enroll">Enroll</a>
+        <% student.Courses.map(el => { %>
+            <% if (el.id === course.id) { %>
+                <a href="">Enrolled</a>
+                <% } else { %>
+                <a href="/<%= student.id %>/<%= course.id %>/enroll">Enroll</a>
+            <% } %>
+        <% }) %>
     <% } else { %>
         <a href="/login">Enroll</a>
-     <% } %>
+    <% } %>
 </body>
 </html>

@@ -9,6 +9,10 @@
 <body>
     <h1>Hello, <%= user.name %>!</h1>
     <h1><%= user.Course.name %> Class's Student List</h1>
+    <form action="/<%= user.id %>">
+        <input type="text" placeholder="Search student" name="search">
+        <button type="submit"></button>
+    </form>
     <table>
         <thead>
             <tr>
