@@ -18,8 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   Course.init({
     name: DataTypes.STRING,
     description: DataTypes.STRING,
-    schedule: DataTypes.STRING,
-    isPassed: DataTypes.BOOLEAN
+    schedule: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Course',
