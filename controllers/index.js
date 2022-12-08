@@ -1,4 +1,4 @@
-const { Course } = require('../models')
+const { Course, User, Instructor, Enrollment } = require('../models')
 
 class Controller {
     static home(req, res) {
@@ -17,7 +17,7 @@ class Controller {
 
     static homeUser(req, res) {
         const data = {};
-        User.findByPk(req.params.id, { include: [Student, Instructor] })
+        User.findByPk(req.params.userId, { include: [Student, Instructor] })
             .then(user => {
                 data.user = user;
                 if (user.Student) {
@@ -37,6 +37,7 @@ class Controller {
             .catch(err => res.send(err))
     }
 
+    
 
 }
 
