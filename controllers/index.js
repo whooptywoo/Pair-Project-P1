@@ -1,4 +1,4 @@
-const { Course, User} = require('../models')
+const { Course, User, Instructor, Student } = require('../models')
 const bcrypt = require('bcryptjs')
 
 class Controller {
@@ -27,7 +27,6 @@ class Controller {
       }
     
       static register(req, res){
-        console.log(req.body)
         const data = req.body
         User.create({
           email: data.email, 
@@ -35,8 +34,32 @@ class Controller {
           createdAt: new Date(),
           updatedAt: new Date()
         })
-          .then(user => res.redirect('/login'))
-          .catch(err => res.send(err))
+          .then(user => {
+            const id = +user.dataValues.id
+            console.log(id)
+            if(data.role === 'Instructor'){
+              console.log('masuk')
+              console.log(id)
+              Instructor.create({
+                name: data.name,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                UserId: id
+              })
+                .then(instructor => res.redirect('/login'))
+                .catch(err => console.log(err))
+            } else {
+              Student.create({
+                name: data.name,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                UserId: id
+              })
+                .then(student => res.redirect('/login'))
+                .catch(err => console.log(err))
+            }
+          })
+          .catch(err => console.log(err))
       }
     
       static loginform(req, res){
